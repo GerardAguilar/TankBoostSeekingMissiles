@@ -17,6 +17,6 @@ public class UIDirectionControl : MonoBehaviour
     private void Update()
     {
         if (m_UseRelativeRotation)
-            transform.rotation = m_RelativeRotation;
+            transform.rotation = m_RelativeRotation;//keeps the ui rotation the same as from the start, and not influenced by the tanks playtime rotation
     }
 }
