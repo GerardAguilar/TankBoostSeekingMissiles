@@ -9,10 +9,12 @@ public class TankMovement : MonoBehaviour
     public AudioClip m_EngineIdling;       
     public AudioClip m_EngineDriving;      
     public float m_PitchRange = 0.2f;
-
+    public float m_BoostValue;
+    public float m_BoostPower;
     
     private string m_MovementAxisName;     
-    private string m_TurnAxisName;         
+    private string m_TurnAxisName;
+    private string m_BoostAxisName;     
     private Rigidbody m_Rigidbody;         
     private float m_MovementInputValue;    
     private float m_TurnInputValue;        
@@ -30,6 +32,9 @@ public class TankMovement : MonoBehaviour
         m_Rigidbody.isKinematic = false;
         m_MovementInputValue = 0f;
         m_TurnInputValue = 0f;
+        m_BoostValue = 150f;
+        m_BoostPower = 10f;
+
     }
 
 
@@ -43,6 +48,7 @@ public class TankMovement : MonoBehaviour
     {
         m_MovementAxisName = "Vertical" + m_PlayerNumber;
         m_TurnAxisName = "Horizontal" + m_PlayerNumber;
+        m_BoostAxisName = "Boost" + m_PlayerNumber;
 
         m_OriginalPitch = m_MovementAudio.pitch;
     }
@@ -55,6 +61,10 @@ public class TankMovement : MonoBehaviour
         m_TurnInputValue = Input.GetAxis(m_TurnAxisName);
 
         EngineAudio();
+
+        if (Input.GetButtonDown(m_BoostAxisName)) {
+            Boost();
+        }
     }
 
 
@@ -111,5 +121,12 @@ public class TankMovement : MonoBehaviour
         Quaternion turnRotation = Quaternion.Euler(0f, turn, 0f);//Quaternion.Euler turns a Vector3 into a Quaternion.
 
         m_Rigidbody.MoveRotation(m_Rigidbody.rotation * turnRotation); //Apply the rotation to the body
+    }
+
+    private void Boost() {
+        Vector3 boostMovement = transform.forward * m_BoostValue * Time.deltaTime;
+        //m_Rigidbody.MovePosition(m_Rigidbody.position + boostMovement);
+
+        m_Rigidbody.AddForce(transform.forward * m_BoostPower, ForceMode.Impulse);
     }
 }

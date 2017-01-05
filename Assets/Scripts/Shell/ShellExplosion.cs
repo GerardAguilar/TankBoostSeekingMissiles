@@ -8,7 +8,8 @@ public class ShellExplosion : MonoBehaviour
     public float m_MaxDamage = 100f;                  
     public float m_ExplosionForce = 1000f;            
     public float m_MaxLifeTime = 2f;                  
-    public float m_ExplosionRadius = 5f;              
+    public float m_ExplosionRadius = 5f;
+    public string m_Owner;
 
     private void Start()
     {
@@ -31,13 +32,15 @@ public class ShellExplosion : MonoBehaviour
 
             TankHealth targetHealth = targetRigidbody.GetComponent<TankHealth>();
 
-            if (!targetHealth) {
+
+            if (!targetHealth){
                 continue;
             }
 
             float damage = CalculateDamage(targetRigidbody.position);
-
-            targetHealth.TakeDamage(damage);
+            
+            targetHealth.TakeDamage(damage, m_Owner);
+            
         }
 
         m_ExplosionParticles.transform.parent = null; //Detach components to become separate from destroyed shell.
@@ -66,5 +69,9 @@ public class ShellExplosion : MonoBehaviour
         damage = Mathf.Max(0f, damage);//accounts for negative damage values
 
         return damage;
+    }
+
+    public void flagOwner(int owner) {
+        m_Owner = owner+"";
     }
 }

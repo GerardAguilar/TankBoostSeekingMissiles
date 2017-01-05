@@ -35,12 +35,13 @@ public class TankHealth : MonoBehaviour
     }
     
 
-    public void TakeDamage(float amount)
+    public void TakeDamage(float amount, string bulletId)
     {
         // Adjust the tank's current health, update the UI based on the new health and check whether or not the tank is dead.
-        m_CurrentHealth -= amount;
-        SetHealthUI();
-
+        if (!gameObject.name.Equals(bulletId)){
+            m_CurrentHealth -= amount;
+            SetHealthUI();
+        }
         if (m_CurrentHealth <= 0f && !m_Dead) {
             OnDeath();
         }
