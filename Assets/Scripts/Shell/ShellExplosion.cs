@@ -19,38 +19,45 @@ public class ShellExplosion : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        // Find all the tanks in an area around the shell and damage them.
-        //Similar to raycast, any thing inside sphere would be collected.
-        Collider[] colliders = Physics.OverlapSphere(transform.position, m_ExplosionRadius, m_TankMask);//origin, radius, and what layers to collect
 
-        for (int i = 0; i < colliders.Length; i++) {
-            Rigidbody targetRigidbody = colliders[i].GetComponent<Rigidbody>();
-            if (!targetRigidbody){
-                continue;
+        if (other.CompareTag("UI")) { }
+        else {
+            // Find all the tanks in an area around the shell and damage them.
+            //Similar to raycast, any thing inside sphere would be collected.
+            Collider[] colliders = Physics.OverlapSphere(transform.position, m_ExplosionRadius, m_TankMask);//origin, radius, and what layers to collect
+
+            for (int i = 0; i < colliders.Length; i++)
+            {
+                Rigidbody targetRigidbody = colliders[i].GetComponent<Rigidbody>();
+                if (!targetRigidbody)
+                {
+                    continue;
+                }
+                targetRigidbody.AddExplosionForce(m_ExplosionForce, transform.position, m_ExplosionRadius);//explode at position of bullet
+
+                TankHealth targetHealth = targetRigidbody.GetComponent<TankHealth>();
+
+
+                if (!targetHealth)
+                {
+                    continue;
+                }
+
+                float damage = CalculateDamage(targetRigidbody.position);
+
+                targetHealth.TakeDamage(damage, m_Owner);
+
             }
-            targetRigidbody.AddExplosionForce(m_ExplosionForce, transform.position, m_ExplosionRadius);//explode at position of bullet
 
-            TankHealth targetHealth = targetRigidbody.GetComponent<TankHealth>();
+            m_ExplosionParticles.transform.parent = null; //Detach components to become separate from destroyed shell.
+            m_ExplosionParticles.Play();
 
+            m_ExplosionAudio.Play();
 
-            if (!targetHealth){
-                continue;
-            }
+            Destroy(m_ExplosionParticles.gameObject, m_ExplosionParticles.duration);//duration of the explosion
 
-            float damage = CalculateDamage(targetRigidbody.position);
-            
-            targetHealth.TakeDamage(damage, m_Owner);
-            
+            Destroy(gameObject);
         }
-
-        m_ExplosionParticles.transform.parent = null; //Detach components to become separate from destroyed shell.
-        m_ExplosionParticles.Play();
-
-        m_ExplosionAudio.Play();
-
-        Destroy(m_ExplosionParticles.gameObject, m_ExplosionParticles.duration);//duration of the explosion
-
-        Destroy(gameObject);
     }
 
 

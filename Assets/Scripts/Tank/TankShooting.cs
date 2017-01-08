@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class TankShooting : MonoBehaviour
 {
-    public int m_PlayerNumber = 1;
+    public int m_PlayerNumber;
     public Rigidbody m_Shell;
     //public GameObject m_Shell;
     public Transform m_FireTransform;    
@@ -17,6 +17,7 @@ public class TankShooting : MonoBehaviour
     public float m_MaxLaunchForce = 30f; 
     public float m_MaxChargeTime = 0.75f;
     public string tempName;
+    public GameObject aoe;
     
     private string m_FireButton;         
     private float m_CurrentLaunchForce;  
@@ -77,7 +78,7 @@ public class TankShooting : MonoBehaviour
     }
 
 
-    private void Fire()
+    public void Fire()
     {
         // Instantiate and launch the shell.
         m_Fired = true;

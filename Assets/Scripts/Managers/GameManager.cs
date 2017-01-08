@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
     public Text m_MessageText;              
     public GameObject m_TankPrefab;         
     public TankManager[] m_Tanks;           
-
+    
 
     private int m_RoundNumber;              
     private WaitForSeconds m_StartWait;     
@@ -29,6 +29,7 @@ public class GameManager : MonoBehaviour
         SpawnAllTanks();
         SetCameraTargets();
 
+
         StartCoroutine(GameLoop());
     }
 
@@ -42,6 +43,7 @@ public class GameManager : MonoBehaviour
             m_Tanks[i].m_PlayerNumber = i + 1;
             m_Tanks[i].Setup();
             m_Tanks[i].m_Instance.name = i + 1 +"";
+
         }
     }
 
