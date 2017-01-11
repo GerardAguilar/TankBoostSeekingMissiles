@@ -1,10 +1,13 @@
-﻿using UnityEngine;
+﻿//Working on tagging each shell with the player name. 9:04 AM 1/4/2017
+
+using UnityEngine;
 using UnityEngine.UI;
 
 public class TankShooting : MonoBehaviour
 {
-    public int m_PlayerNumber = 1;       
-    public Rigidbody m_Shell;            
+    public int m_PlayerNumber;
+    public Rigidbody m_Shell;
+    //public GameObject m_Shell;
     public Transform m_FireTransform;    
     public Slider m_AimSlider;           
     public AudioSource m_ShootingAudio;  
@@ -13,18 +16,22 @@ public class TankShooting : MonoBehaviour
     public float m_MinLaunchForce = 15f; 
     public float m_MaxLaunchForce = 30f; 
     public float m_MaxChargeTime = 0.75f;
-
+    public string tempName;
+    public GameObject aoe;
     
     private string m_FireButton;         
     private float m_CurrentLaunchForce;  
     private float m_ChargeSpeed;         
     private bool m_Fired;                
-
+    private int m_ShellNumber;
 
     private void OnEnable()
     {
         m_CurrentLaunchForce = m_MinLaunchForce;
         m_AimSlider.value = m_MinLaunchForce;
+        //m_ShellNumber = this.GetComponentInParent<TankManager>().m_PlayerNumber;
+        tempName = transform.gameObject.name;
+        int.TryParse(tempName, out m_ShellNumber);
     }
 
 
@@ -71,12 +78,21 @@ public class TankShooting : MonoBehaviour
     }
 
 
-    private void Fire()
+    public void Fire()
     {
         // Instantiate and launch the shell.
         m_Fired = true;
 
         Rigidbody shellInstance = Instantiate(m_Shell, m_FireTransform.position, m_FireTransform.rotation) as Rigidbody;
+
+        //shellInstance.GetComponent<ShellExplosion>();
+
+        //shellInstance.GetComponent<ShellExplosion>().flagOwner(m_ShellNumber);
+        ////Debug.Log("Test");
+
+        ShellExplosion shellScript = shellInstance.GetComponent<ShellExplosion>();
+        shellScript.flagOwner(m_PlayerNumber);
+
 
         shellInstance.velocity = m_CurrentLaunchForce * m_FireTransform.forward;
 
@@ -85,4 +101,6 @@ public class TankShooting : MonoBehaviour
 
         m_CurrentLaunchForce = m_MinLaunchForce;
     }
+
+    
 }

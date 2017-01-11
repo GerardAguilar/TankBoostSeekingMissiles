@@ -8,7 +8,8 @@ public class ShellExplosion : MonoBehaviour
     public float m_MaxDamage = 100f;                  
     public float m_ExplosionForce = 1000f;            
     public float m_MaxLifeTime = 2f;                  
-    public float m_ExplosionRadius = 5f;              
+    public float m_ExplosionRadius = 5f;
+    public string m_Owner;
 
     private void Start()
     {
@@ -18,26 +19,39 @@ public class ShellExplosion : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+
+        if (other.CompareTag("UI")) { }
+        else {
+            Explode();
+        }
+    }
+
+    public void Explode() {
         // Find all the tanks in an area around the shell and damage them.
         //Similar to raycast, any thing inside sphere would be collected.
         Collider[] colliders = Physics.OverlapSphere(transform.position, m_ExplosionRadius, m_TankMask);//origin, radius, and what layers to collect
 
-        for (int i = 0; i < colliders.Length; i++) {
+        for (int i = 0; i < colliders.Length; i++)
+        {
             Rigidbody targetRigidbody = colliders[i].GetComponent<Rigidbody>();
-            if (!targetRigidbody){
+            if (!targetRigidbody)
+            {
                 continue;
             }
             targetRigidbody.AddExplosionForce(m_ExplosionForce, transform.position, m_ExplosionRadius);//explode at position of bullet
 
             TankHealth targetHealth = targetRigidbody.GetComponent<TankHealth>();
 
-            if (!targetHealth) {
+
+            if (!targetHealth)
+            {
                 continue;
             }
 
             float damage = CalculateDamage(targetRigidbody.position);
 
-            targetHealth.TakeDamage(damage);
+            targetHealth.TakeDamage(damage, m_Owner);
+
         }
 
         m_ExplosionParticles.transform.parent = null; //Detach components to become separate from destroyed shell.
@@ -66,5 +80,13 @@ public class ShellExplosion : MonoBehaviour
         damage = Mathf.Max(0f, damage);//accounts for negative damage values
 
         return damage;
+    }
+
+    public void flagOwner(int owner) {
+        m_Owner = owner+"";
+    }
+
+    public void flagOwner(string owner) {
+        m_Owner = owner;
     }
 }
