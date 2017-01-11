@@ -1,4 +1,6 @@
-﻿using System;
+﻿//Missile destroys itself before triggering the explosion.
+
+using System;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
@@ -36,25 +38,29 @@ public class WeaponSystem : MonoBehaviour {
             Debug.Log("Missile" + playerNum + " was pressed.");
             aoe.SetActive(true);
         }
-        else if (Input.GetButtonUp("Missile" + playerNum)) {
+        else if (Input.GetButtonUp("Missile" + playerNum))
+        {
             //This is also where we launch the missiles
-            Debug.Log("Target: " + aoeScript.target);
-            //if (aoeScript.IsEnemy()) { 
-                FireMissile(aoeScript.target);
-            //}
+            if (targetObjects.Count != 0) {
+                Debug.Log("Target: " + aoeScript.target);
+                FireMissile(targetObjects[0].transform.position);             
+            }
             aoe.SetActive(false);
+            ClearTargetArray();
         }
     }
 
     void FireMissile(Vector3 target) {
+        target = new Vector3(target.x, target.y + .85f, target.z);
         Debug.Log("Fire Missile at " + target);
 
         //Need to instantiate missile
         Rigidbody shellInstance = Instantiate(missile, fireTransform.position, fireTransform.rotation) as Rigidbody;
-
         //Lerp the position
-        shellInstance.velocity = 5f * fireTransform.forward;
+        //shellInstance.velocity = 5f * fireTransform.forward;
 
+        shellInstance.GetComponent<Missile>().SetTarget(target);
+        shellInstance.GetComponent<ShellExplosion>().flagOwner(playerNum);
         //the lock on should be time-limited
     }
 
@@ -76,7 +82,7 @@ public class WeaponSystem : MonoBehaviour {
     }
 
     public void ClearTargetArray() {
-        this.targetObjects = new List<GameObject>();
+        targetObjects = new List<GameObject>();
         
     }
 

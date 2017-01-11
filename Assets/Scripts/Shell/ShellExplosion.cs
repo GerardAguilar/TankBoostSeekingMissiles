@@ -22,42 +22,46 @@ public class ShellExplosion : MonoBehaviour
 
         if (other.CompareTag("UI")) { }
         else {
-            // Find all the tanks in an area around the shell and damage them.
-            //Similar to raycast, any thing inside sphere would be collected.
-            Collider[] colliders = Physics.OverlapSphere(transform.position, m_ExplosionRadius, m_TankMask);//origin, radius, and what layers to collect
+            Explode();
+        }
+    }
 
-            for (int i = 0; i < colliders.Length; i++)
+    public void Explode() {
+        // Find all the tanks in an area around the shell and damage them.
+        //Similar to raycast, any thing inside sphere would be collected.
+        Collider[] colliders = Physics.OverlapSphere(transform.position, m_ExplosionRadius, m_TankMask);//origin, radius, and what layers to collect
+
+        for (int i = 0; i < colliders.Length; i++)
+        {
+            Rigidbody targetRigidbody = colliders[i].GetComponent<Rigidbody>();
+            if (!targetRigidbody)
             {
-                Rigidbody targetRigidbody = colliders[i].GetComponent<Rigidbody>();
-                if (!targetRigidbody)
-                {
-                    continue;
-                }
-                targetRigidbody.AddExplosionForce(m_ExplosionForce, transform.position, m_ExplosionRadius);//explode at position of bullet
+                continue;
+            }
+            targetRigidbody.AddExplosionForce(m_ExplosionForce, transform.position, m_ExplosionRadius);//explode at position of bullet
 
-                TankHealth targetHealth = targetRigidbody.GetComponent<TankHealth>();
+            TankHealth targetHealth = targetRigidbody.GetComponent<TankHealth>();
 
 
-                if (!targetHealth)
-                {
-                    continue;
-                }
-
-                float damage = CalculateDamage(targetRigidbody.position);
-
-                targetHealth.TakeDamage(damage, m_Owner);
-
+            if (!targetHealth)
+            {
+                continue;
             }
 
-            m_ExplosionParticles.transform.parent = null; //Detach components to become separate from destroyed shell.
-            m_ExplosionParticles.Play();
+            float damage = CalculateDamage(targetRigidbody.position);
 
-            m_ExplosionAudio.Play();
+            targetHealth.TakeDamage(damage, m_Owner);
 
-            Destroy(m_ExplosionParticles.gameObject, m_ExplosionParticles.duration);//duration of the explosion
-
-            Destroy(gameObject);
         }
+
+        m_ExplosionParticles.transform.parent = null; //Detach components to become separate from destroyed shell.
+        m_ExplosionParticles.Play();
+
+        m_ExplosionAudio.Play();
+
+        Destroy(m_ExplosionParticles.gameObject, m_ExplosionParticles.duration);//duration of the explosion
+
+        Destroy(gameObject);
     }
 
 
@@ -80,5 +84,9 @@ public class ShellExplosion : MonoBehaviour
 
     public void flagOwner(int owner) {
         m_Owner = owner+"";
+    }
+
+    public void flagOwner(string owner) {
+        m_Owner = owner;
     }
 }

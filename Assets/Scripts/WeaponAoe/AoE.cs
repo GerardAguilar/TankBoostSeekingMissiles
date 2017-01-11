@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class AoE : MonoBehaviour {
 
@@ -9,6 +10,7 @@ public class AoE : MonoBehaviour {
     string playerNum;
     TankShooting tankShooting;
     WeaponSystem weaponSystem;
+    //List<GameObject> list;
 
 	// Use this for initialization
 	void Awake () {
@@ -47,8 +49,7 @@ public class AoE : MonoBehaviour {
 
     public void OnDisable() {
         target = new Vector3();
-        weaponSystem.ClearTargetArray();
-        //flush out Weapon System's target Array
+        //flush out Weapon System's target Array once missiles are fired
     }
 
     public bool IsEnemy(Collider other)
