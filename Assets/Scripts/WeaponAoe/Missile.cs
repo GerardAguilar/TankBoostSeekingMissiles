@@ -41,14 +41,14 @@ public class Missile : MonoBehaviour {
         StartLerping();
 
         Vector3 roundedPosition = new Vector3(
-            Mathf.RoundToInt(transform.position.x*2),
-            Mathf.RoundToInt(transform.position.y*2),
-            Mathf.RoundToInt(transform.position.z*2));
+            Mathf.RoundToInt(transform.position.x*3),
+            Mathf.RoundToInt(transform.position.y*3),
+            Mathf.RoundToInt(transform.position.z*3));
 
         Vector3 roundedEndPosition = new Vector3(
-            Mathf.RoundToInt(endPosition.x*2),
-            Mathf.RoundToInt(endPosition.y*2),
-            Mathf.RoundToInt(endPosition.z*2));
+            Mathf.RoundToInt(endPosition.x*3),
+            Mathf.RoundToInt(endPosition.y*3),
+            Mathf.RoundToInt(endPosition.z*3));
 
         if (roundedPosition == roundedEndPosition) {
             GetComponent<ShellExplosion>().Explode();
