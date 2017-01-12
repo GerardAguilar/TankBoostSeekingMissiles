@@ -51,6 +51,7 @@ public class WeaponSystem : MonoBehaviour {
     }
 
     void FireMissile(Vector3 target) {
+        GetComponent<AudioSource>().Play();
         target = new Vector3(target.x, target.y + .85f, target.z);
         Debug.Log("Fire Missile at " + target);
 
